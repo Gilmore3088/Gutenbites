@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabase, verifyAdmin, logPipelineEvent } from "@/lib/supabase";
+import { isSupabaseConfigured } from "@/lib/config";
 import { validateStatusOverride } from "./validate";
 
 export async function PUT(
@@ -23,6 +24,15 @@ export async function PUT(
   const validation = validateStatusOverride(body.status);
   if (!validation.valid) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
+  }
+
+  if (!isSupabaseConfigured()) {
+    return NextResponse.json({
+      id,
+      previous_status: "unknown",
+      new_status: body.status,
+      dev_mode: true,
+    });
   }
 
   const supabase = getSupabase();

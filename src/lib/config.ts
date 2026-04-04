@@ -6,6 +6,14 @@ function required(name: string): string {
   return value;
 }
 
+function optional(name: string): string | undefined {
+  return process.env[name] || undefined;
+}
+
+export function isSupabaseConfigured(): boolean {
+  return !!(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
 export const config = {
   supabase: {
     url: () => required("SUPABASE_URL"),

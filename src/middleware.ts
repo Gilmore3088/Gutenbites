@@ -10,6 +10,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Dev mode: skip auth when Supabase isn't configured
+  const supabaseUrl = process.env.SUPABASE_URL;
+  if (!supabaseUrl) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get("sb-access-token")?.value;
   if (!token) {
     return NextResponse.redirect(new URL("/admin/login", request.url));

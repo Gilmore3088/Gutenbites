@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabase, verifyAdmin } from "@/lib/supabase";
+import { isSupabaseConfigured } from "@/lib/config";
 import { validateQueueInput, type QueueInput } from "./validate";
 
 export async function POST(request: NextRequest) {
@@ -18,6 +19,17 @@ export async function POST(request: NextRequest) {
   const validation = validateQueueInput(body);
   if (!validation.valid) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
+  }
+
+  // Dev mode: simulate success when Supabase isn't configured
+  if (!isSupabaseConfigured()) {
+    return NextResponse.json({
+      queued: body.gutenberg_ids.length,
+      duplicates: 0,
+      queued_ids: body.gutenberg_ids,
+      duplicate_ids: [],
+      dev_mode: true,
+    });
   }
 
   const supabase = getSupabase();

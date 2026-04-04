@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabase, verifyAdmin, logPipelineEvent } from "@/lib/supabase";
+import { isSupabaseConfigured } from "@/lib/config";
 
 const QA_FLAGGED_STATUS = "qa_flagged";
 const PENDING_STATUS = "pending";
@@ -13,6 +14,15 @@ export async function POST(
   const auth = await verifyAdmin(request.headers.get("authorization"));
   if (!auth.valid) {
     return NextResponse.json({ error: auth.error }, { status: 401 });
+  }
+
+  if (!isSupabaseConfigured()) {
+    return NextResponse.json({
+      chapter_id: chapterId,
+      previous_status: QA_FLAGGED_STATUS,
+      new_status: PENDING_STATUS,
+      dev_mode: true,
+    });
   }
 
   const supabase = getSupabase();

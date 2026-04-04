@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { config } from "./config";
+import { config, isSupabaseConfigured } from "./config";
 
 let client: SupabaseClient | null = null;
 
@@ -98,6 +98,11 @@ export async function verifyAdmin(authHeader: string | null): Promise<{
   userId: string | null;
   error: string | null;
 }> {
+  // Dev mode: skip auth when Supabase isn't configured
+  if (!isSupabaseConfigured()) {
+    return { valid: true, userId: "dev-admin", error: null };
+  }
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return { valid: false, userId: null, error: "Missing authorization header" };
   }
