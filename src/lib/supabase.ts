@@ -1,0 +1,114 @@
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { config } from "./config";
+
+let client: SupabaseClient | null = null;
+
+export function getSupabase(): SupabaseClient {
+  if (!client) {
+    client = createClient(config.supabase.url(), config.supabase.serviceRoleKey());
+  }
+  return client;
+}
+
+export type TitleStatus =
+  | "queued"
+  | "ingested"
+  | "cleaned"
+  | "segmented"
+  | "enriched"
+  | "qa_passed"
+  | "synthesized"
+  | "processed"
+  | "published"
+  | `error_${string}`;
+
+export interface Title {
+  id: string;
+  gutenberg_id: number;
+  title: string;
+  author: string;
+  language: string;
+  feed_slug: string;
+  status: TitleStatus;
+  priority_score: number;
+  raw_r2_key: string | null;
+  clean_r2_key: string | null;
+  intro_text: string | null;
+  cover_art_url: string | null;
+  seo_description: string | null;
+  error_msg: string | null;
+  retry_count: number;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Chapter {
+  id: string;
+  title_id: string;
+  chapter_num: number;
+  chapter_title: string;
+  word_count: number;
+  text_r2_key: string | null;
+  audio_raw_r2_key: string | null;
+  audio_final_r2_key: string | null;
+  audio_url: string | null;
+  duration_secs: number | null;
+  file_size_bytes: number | null;
+  status: string;
+  tts_char_count: number | null;
+  pronunciation_hints: Array<{ word: string; phonetic: string }>;
+  published_at: string | null;
+  created_at: string;
+}
+
+export interface Feed {
+  slug: string;
+  name: string;
+  description: string;
+  voice_id: string;
+  intro_music_r2: string | null;
+  outro_music_r2: string | null;
+  rss_url: string | null;
+  created_at: string;
+}
+
+export async function logPipelineEvent(
+  titleId: string | null,
+  eventType: string,
+  fromStatus: string | null,
+  toStatus: string | null,
+  metadata: Record<string, unknown> = {}
+): Promise<void> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from("pipeline_logs").insert({
+    title_id: titleId,
+    event_type: eventType,
+    from_status: fromStatus,
+    to_status: toStatus,
+    metadata,
+  });
+  if (error) {
+    console.error("Failed to log pipeline event:", error.message);
+  }
+}
+
+export async function transitionTitle(
+  titleId: string,
+  fromStatus: string,
+  toStatus: string,
+  updates: Partial<Title> = {}
+): Promise<void> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from("titles")
+    .update({ ...updates, status: toStatus })
+    .eq("id", titleId)
+    .eq("status", fromStatus);
+
+  if (error) {
+    throw new Error(`State transition failed (${fromStatus} -> ${toStatus}): ${error.message}`);
+  }
+
+  await logPipelineEvent(titleId, "state_transition", fromStatus, toStatus, updates);
+}
