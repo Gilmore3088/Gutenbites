@@ -100,14 +100,19 @@ export async function transitionTitle(
   updates: Partial<Title> = {}
 ): Promise<void> {
   const supabase = getSupabase();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("titles")
     .update({ ...updates, status: toStatus })
     .eq("id", titleId)
-    .eq("status", fromStatus);
+    .eq("status", fromStatus)
+    .select("id");
 
   if (error) {
     throw new Error(`State transition failed (${fromStatus} -> ${toStatus}): ${error.message}`);
+  }
+
+  if (!data || data.length === 0) {
+    throw new Error(`State transition failed: title ${titleId} is not in state ${fromStatus}`);
   }
 
   await logPipelineEvent(titleId, "state_transition", fromStatus, toStatus, updates);

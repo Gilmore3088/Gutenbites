@@ -1,5 +1,5 @@
 import { uploadToR2 } from "@/lib/r2";
-import { getSupabase, transitionTitle, logPipelineEvent } from "@/lib/supabase";
+import { getSupabase, logPipelineEvent } from "@/lib/supabase";
 
 export interface GutenbergMetadata {
   title: string;

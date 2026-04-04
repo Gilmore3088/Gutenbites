@@ -20,11 +20,6 @@ const WORD_NUMERALS = [
   "Forty-Five", "Forty-Six", "Forty-Seven", "Forty-Eight", "Forty-Nine", "Fifty",
 ];
 
-const CHAPTER_REGEX = new RegExp(
-  `^(?:CHAPTER|Chapter)\\s+(?:[IVXLCDM]+|\\d+|${WORD_NUMERALS.join("|")})(?:\\s*[.:—–-]\\s*.*)?$`,
-  "m"
-);
-
 function buildChapterRegex(): RegExp {
   return new RegExp(
     `^(?:CHAPTER|Chapter)\\s+(?:[IVXLCDM]+|\\d+|${WORD_NUMERALS.join("|")})(?:\\s*[.:—\\u2013\\u2014-]\\s*.*)?$`,

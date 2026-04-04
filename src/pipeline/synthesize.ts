@@ -46,7 +46,7 @@ export async function synthesizeTitle(titleId: string): Promise<void> {
 
     let text = await downloadFromR2(chapter.text_r2_key);
 
-    if (title.intro_text) {
+    if (chapter.chapter_num === 1 && title.intro_text) {
       text = `${title.intro_text}\n\n${text}`;
     }
 

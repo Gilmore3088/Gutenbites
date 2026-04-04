@@ -1,5 +1,5 @@
 import { getSupabase, transitionTitle, logPipelineEvent } from "@/lib/supabase";
-import type { Chapter } from "@/lib/supabase";
+import type { Chapter, Title } from "@/lib/supabase";
 
 export async function publishTitle(titleId: string): Promise<void> {
   const supabase = getSupabase();
@@ -33,7 +33,7 @@ export async function publishTitle(titleId: string): Promise<void> {
 
   await transitionTitle(titleId, "processed", "published", {
     published_at: now,
-  } as never);
+  } as Partial<Title>);
 
   await logPipelineEvent(titleId, "publish_complete", "processed", "published", {
     chapter_count: chapters.length,
