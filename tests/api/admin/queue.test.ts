@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateQueueInput } from "@/app/api/admin/queue/route";
+import { validateQueueInput } from "@/app/api/admin/queue/validate";
 
 describe("validateQueueInput", () => {
   it("accepts valid input", () => {

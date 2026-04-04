@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPipelineStats } from "@/app/api/admin/pipeline/route";
+import { buildPipelineStats } from "@/app/api/admin/pipeline/stats";
 
 describe("buildPipelineStats", () => {
   it("counts titles by status correctly", () => {

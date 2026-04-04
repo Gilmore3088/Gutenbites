@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateStatusOverride } from "@/app/api/admin/titles/[id]/status/route";
+import { validateStatusOverride } from "@/app/api/admin/titles/[id]/status/validate";
 
 describe("validateStatusOverride", () => {
   it("accepts valid pipeline states", () => {
