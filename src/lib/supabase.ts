@@ -93,6 +93,32 @@ export async function logPipelineEvent(
   }
 }
 
+export async function verifyAdmin(authHeader: string | null): Promise<{
+  valid: boolean;
+  userId: string | null;
+  error: string | null;
+}> {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return { valid: false, userId: null, error: "Missing authorization header" };
+  }
+
+  const token = authHeader.replace("Bearer ", "");
+  const supabase = getSupabase();
+
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+
+  if (error || !user) {
+    return { valid: false, userId: null, error: "Invalid token" };
+  }
+
+  const role = user.app_metadata?.role;
+  if (role !== "admin") {
+    return { valid: false, userId: user.id, error: "Not an admin" };
+  }
+
+  return { valid: true, userId: user.id, error: null };
+}
+
 export async function transitionTitle(
   titleId: string,
   fromStatus: string,
