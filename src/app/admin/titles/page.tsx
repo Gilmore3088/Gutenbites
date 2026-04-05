@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { PIPELINE_STATES } from "@/pipeline/states";
 import type { Title } from "@/lib/supabase";
@@ -12,7 +12,7 @@ function StateBadge({ state }: { state: string }) {
   return <span className={`state-badge ${cls}`}>{state}</span>;
 }
 
-export default function TitlesPage() {
+function TitlesPageContent() {
   const searchParams = useSearchParams();
   const initialStatus = searchParams.get("status") ?? "all";
 
@@ -182,5 +182,13 @@ export default function TitlesPage() {
         </table>
       )}
     </div>
+  );
+}
+
+export default function TitlesPage() {
+  return (
+    <Suspense fallback={<div className="admin-empty"><p>Loading...</p></div>}>
+      <TitlesPageContent />
+    </Suspense>
   );
 }

@@ -8,8 +8,8 @@ export async function uploadToR2(
   contentType: string
 ): Promise<void> {
   const supabase = getSupabase();
-  const blob =
-    typeof body === "string" ? new Blob([body], { type: contentType }) : new Blob([body], { type: contentType });
+  const blobPart: BlobPart = typeof body === "string" ? body : body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength) as ArrayBuffer;
+  const blob = new Blob([blobPart], { type: contentType });
 
   const { error } = await supabase.storage
     .from(BUCKET)
