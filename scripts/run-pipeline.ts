@@ -14,15 +14,8 @@ for (const line of envContent.split("\n")) {
 }
 
 async function main() {
-  // Dynamic imports so env is set before modules load
   const { ingestTitle } = await import("../src/pipeline/ingest");
-  const { cleanTitle } = await import("../src/pipeline/clean");
-  const { segmentTitle } = await import("../src/pipeline/segment");
-  const { enrichTitle } = await import("../src/pipeline/enrich");
-  const { qaTitle } = await import("../src/pipeline/qa");
-  const { synthesizeTitle } = await import("../src/pipeline/synthesize");
-  const { postprocessTitle } = await import("../src/pipeline/postprocess");
-  const { publishTitle } = await import("../src/pipeline/publish");
+  const { runPipeline } = await import("../src/pipeline/orchestrator");
 
   const gutenbergId = parseInt(process.argv[2], 10);
   const feedSlug = process.argv[3] || "classics";
@@ -39,28 +32,17 @@ async function main() {
     const titleId = await ingestTitle(gutenbergId, feedSlug);
     console.log(`   Title ID: ${titleId}`);
 
-    console.log("2/8 Cleaning text...");
-    await cleanTitle(titleId);
+    console.log("Running pipeline stages via orchestrator...");
+    const result = await runPipeline(titleId, "ingested");
 
-    console.log("3/8 Segmenting chapters...");
-    await segmentTitle(titleId);
-
-    console.log("4/8 Generating editorial intro...");
-    await enrichTitle(titleId);
-
-    console.log("5/8 Running QA scan...");
-    await qaTitle(titleId);
-
-    console.log("6/8 Synthesizing audio (this may take a few minutes)...");
-    await synthesizeTitle(titleId);
-
-    console.log("7/8 Post-processing audio...");
-    await postprocessTitle(titleId);
-
-    console.log("8/8 Publishing...");
-    await publishTitle(titleId);
+    if (!result.processed) {
+      console.error(`\n=== PIPELINE FAILED at stage: ${result.toStatus} ===`);
+      console.error(result.error);
+      process.exit(1);
+    }
 
     console.log(`\n=== COMPLETE: Gutenberg #${gutenbergId} is now published ===`);
+    console.log(`Stages completed: ${result.stages.join(" -> ")}`);
     console.log(`RSS feed: http://localhost:3000/api/rss/${feedSlug}`);
   } catch (error) {
     console.error("\n=== PIPELINE FAILED ===");
