@@ -19,11 +19,8 @@ export const config = {
     url: () => required("SUPABASE_URL"),
     serviceRoleKey: () => required("SUPABASE_SERVICE_ROLE_KEY"),
   },
-  r2: {
-    accountId: () => required("R2_ACCOUNT_ID"),
-    accessKeyId: () => required("R2_ACCESS_KEY_ID"),
-    secretAccessKey: () => required("R2_SECRET_ACCESS_KEY"),
-    bucketName: () => required("R2_BUCKET_NAME"),
+  storage: {
+    bucket: () => process.env.STORAGE_BUCKET ?? "gutenbites",
   },
   elevenlabs: {
     apiKey: () => required("ELEVENLABS_API_KEY"),

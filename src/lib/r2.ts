@@ -1,47 +1,62 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
-import { config } from "./config";
+import { getSupabase } from "./supabase";
 
-let client: S3Client | null = null;
+const BUCKET = process.env.STORAGE_BUCKET ?? "gutenbites";
 
-function getR2Client(): S3Client {
-  if (!client) {
-    client = new S3Client({
-      region: "auto",
-      endpoint: `https://${config.r2.accountId()}.r2.cloudflarestorage.com`,
-      credentials: {
-        accessKeyId: config.r2.accessKeyId(),
-        secretAccessKey: config.r2.secretAccessKey(),
-      },
-    });
+export async function uploadToR2(
+  key: string,
+  body: string | Buffer,
+  contentType: string
+): Promise<void> {
+  const supabase = getSupabase();
+  const blob =
+    typeof body === "string" ? new Blob([body], { type: contentType }) : new Blob([body], { type: contentType });
+
+  const { error } = await supabase.storage
+    .from(BUCKET)
+    .upload(key, blob, { contentType, upsert: true });
+
+  if (error) {
+    throw new Error(`Storage upload failed for ${key}: ${error.message}`);
   }
-  return client;
 }
 
-export async function uploadToR2(key: string, body: string | Buffer, contentType: string): Promise<void> {
-  const r2 = getR2Client();
-  await r2.send(new PutObjectCommand({ Bucket: config.r2.bucketName(), Key: key, Body: body, ContentType: contentType }));
-}
-
-export async function uploadBufferToR2(key: string, body: Buffer, contentType: string): Promise<void> {
+export async function uploadBufferToR2(
+  key: string,
+  body: Buffer,
+  contentType: string
+): Promise<void> {
   return uploadToR2(key, body, contentType);
 }
 
 export async function downloadFromR2(key: string): Promise<string> {
-  const r2 = getR2Client();
-  const response = await r2.send(new GetObjectCommand({ Bucket: config.r2.bucketName(), Key: key }));
-  if (!response.Body) throw new Error(`Empty response for R2 key: ${key}`);
-  return response.Body.transformToString("utf-8");
+  const supabase = getSupabase();
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .download(key);
+
+  if (error || !data) {
+    throw new Error(`Storage download failed for ${key}: ${error?.message ?? "empty response"}`);
+  }
+
+  return data.text();
 }
 
 export async function downloadBufferFromR2(key: string): Promise<Buffer> {
-  const r2 = getR2Client();
-  const response = await r2.send(new GetObjectCommand({ Bucket: config.r2.bucketName(), Key: key }));
-  if (!response.Body) throw new Error(`Empty response for R2 key: ${key}`);
-  const bytes = await response.Body.transformToByteArray();
-  return Buffer.from(bytes);
+  const supabase = getSupabase();
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .download(key);
+
+  if (error || !data) {
+    throw new Error(`Storage download failed for ${key}: ${error?.message ?? "empty response"}`);
+  }
+
+  const arrayBuffer = await data.arrayBuffer();
+  return Buffer.from(arrayBuffer);
 }
 
 export function getPublicUrl(key: string): string {
-  const bucket = config.r2.bucketName();
-  return `https://${bucket}.r2.dev/${key}`;
+  const supabase = getSupabase();
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(key);
+  return data.publicUrl;
 }
