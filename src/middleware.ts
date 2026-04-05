@@ -10,9 +10,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Dev mode: skip auth when Supabase isn't configured
-  const supabaseUrl = process.env.SUPABASE_URL;
-  if (!supabaseUrl) {
+  // Dev mode: skip auth in development or when Supabase isn't configured
+  if (process.env.NODE_ENV === "development" || !process.env.SUPABASE_URL) {
     return NextResponse.next();
   }
 

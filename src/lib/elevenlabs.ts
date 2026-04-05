@@ -1,9 +1,14 @@
+import { execSync } from "child_process";
+import { readFileSync, unlinkSync, mkdtempSync } from "fs";
+import path from "path";
+import os from "os";
 import { config } from "./config";
 
 const BASE_URL = "https://api.elevenlabs.io/v1";
 const MAX_CHUNK_CHARS = 2400;
 const MAX_RETRIES = 3;
 const RETRY_DELAYS_MS = [1000, 5000, 30000];
+const USE_MOCK_TTS = process.env.MOCK_TTS === "true";
 
 export function chunkTextBySentence(text: string): string[] {
   const sentences = text.match(/[^.!?]+[.!?]+[\s]*/g) || [text];
@@ -24,10 +29,35 @@ async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function generateMockAudio(text: string): Buffer {
+  // Generate a short silent MP3 using ffmpeg (~1 sec per 150 words)
+  const words = text.split(/\s+/).length;
+  const durationSecs = Math.max(1, Math.round(words / 2.5)); // ~150 wpm speaking rate
+  const tmpDir = mkdtempSync(path.join(os.tmpdir(), "mock-tts-"));
+  const outPath = path.join(tmpDir, "mock.mp3");
+
+  try {
+    execSync(
+      `ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=stereo -t ${durationSecs} -codec:a libmp3lame -b:a 128k "${outPath}"`,
+      { stdio: "pipe" }
+    );
+    return readFileSync(outPath);
+  } finally {
+    try { unlinkSync(outPath); } catch {}
+    try { require("fs").rmdirSync(tmpDir); } catch {}
+  }
+}
+
 export async function synthesizeChunk(
   text: string,
   voiceId?: string
 ): Promise<{ audio: Buffer; charCount: number }> {
+  // Mock mode: generate silent MP3 instead of calling ElevenLabs
+  if (USE_MOCK_TTS) {
+    const audio = generateMockAudio(text);
+    return { audio, charCount: text.length };
+  }
+
   const voice = voiceId ?? config.elevenlabs.voiceId();
   const url = `${BASE_URL}/text-to-speech/${voice}`;
   let lastError: Error | null = null;
