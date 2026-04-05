@@ -32,3 +32,27 @@ export const STATE_TO_STAGE: Record<string, string> = {
   segmented: "enrich", enriched: "qa", qa_passed: "synthesize",
   synthesized: "postprocess", processed: "publish",
 };
+
+export const RETRY_CONFIG: Record<string, { maxRetries: number; backoffMinutes: number[] }> = {
+  error_ingested: { maxRetries: 5, backoffMinutes: [1, 5, 60, 360, 1440] },
+  error_cleaned: { maxRetries: 3, backoffMinutes: [1, 5, 60] },
+  error_segmented: { maxRetries: 3, backoffMinutes: [1, 5, 60] },
+  error_enriched: { maxRetries: 3, backoffMinutes: [1, 5, 60] },
+  error_qa_passed: { maxRetries: 3, backoffMinutes: [1, 5, 60] },
+  error_synthesized: { maxRetries: 5, backoffMinutes: [1, 5, 60, 360, 1440] },
+  error_processed: { maxRetries: 3, backoffMinutes: [1, 5, 60] },
+  error_published: { maxRetries: 3, backoffMinutes: [1, 5, 60] },
+};
+
+export function getRetryBackoffMs(errorState: string, retryCount: number): number {
+  const config = RETRY_CONFIG[errorState];
+  if (!config) return 60000; // default 1 minute
+  const index = Math.min(retryCount, config.backoffMinutes.length - 1);
+  return config.backoffMinutes[index] * 60 * 1000;
+}
+
+export function canRetry(errorState: string, retryCount: number): boolean {
+  const config = RETRY_CONFIG[errorState];
+  if (!config) return false;
+  return retryCount < config.maxRetries;
+}
