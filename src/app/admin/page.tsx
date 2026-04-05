@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { PIPELINE_STATES } from "@/pipeline/states";
 
 interface PipelineData {
@@ -111,18 +112,27 @@ export default function AdminOverviewPage() {
 
       <div className="pipeline-grid">
         {PIPELINE_STATES.map((state) => (
-          <div key={state} className="pipeline-card">
+          <Link
+            key={state}
+            href={`/admin/titles?status=${state}`}
+            className="pipeline-card"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
             <span className="pipeline-card-count">
               {data.counts[state] ?? 0}
             </span>
             <span className="pipeline-card-label">{state}</span>
-          </div>
+          </Link>
         ))}
 
-        <div className={`pipeline-card${data.errorCount > 0 ? " error-card" : ""}`}>
+        <Link
+          href="/admin/titles?status=error"
+          className={`pipeline-card${data.errorCount > 0 ? " error-card" : ""}`}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
           <span className="pipeline-card-count">{data.errorCount}</span>
           <span className="pipeline-card-label">errors</span>
-        </div>
+        </Link>
       </div>
 
       {data.errorCount > 0 && (
