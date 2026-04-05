@@ -98,8 +98,8 @@ export async function verifyAdmin(authHeader: string | null): Promise<{
   userId: string | null;
   error: string | null;
 }> {
-  // Dev mode: skip auth when Supabase isn't configured
-  if (!isSupabaseConfigured()) {
+  // Dev mode: skip auth when Supabase isn't configured or in development
+  if (!isSupabaseConfigured() || process.env.NODE_ENV === "development") {
     return { valid: true, userId: "dev-admin", error: null };
   }
 
