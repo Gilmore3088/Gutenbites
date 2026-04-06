@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import "./admin.css";
 
 const NAV_ITEMS = [
@@ -11,15 +12,50 @@ const NAV_ITEMS = [
   { label: "QA Review", href: "/admin/qa" },
 ];
 
+const PUBLIC_PATHS = ["/admin/login", "/admin/auth/callback"];
+
+function hasAuthCookie(): boolean {
+  return document.cookie.includes("sb-access-token=");
+}
+
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [checked, setChecked] = useState(false);
 
-  if (pathname === "/admin/login") {
+  const isPublicPath = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+
+  useEffect(() => {
+    if (isPublicPath) {
+      setChecked(true);
+      return;
+    }
+
+    if (!hasAuthCookie()) {
+      router.replace("/admin/login");
+    } else {
+      setChecked(true);
+    }
+  }, [pathname, isPublicPath, router]);
+
+  // Public paths (login, callback) render immediately
+  if (isPublicPath) {
     return <>{children}</>;
+  }
+
+  // Wait for auth check before rendering admin shell
+  if (!checked) {
+    return (
+      <div className="admin-login">
+        <div className="admin-login-card">
+          <p>Checking authentication...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
