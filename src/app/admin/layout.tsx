@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import "./admin.css";
 
 const NAV_ITEMS = [
@@ -19,6 +20,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Login and callback pages render without sidebar
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
@@ -28,7 +30,15 @@ export default function AdminLayout({
   // Admin pages render with sidebar (middleware handles auth redirect)
   return (
     <div className="admin-shell">
-      <aside className="admin-sidebar">
+      <button
+        className="admin-menu-toggle"
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle menu"
+      >
+        {menuOpen ? "\u2715" : "\u2630"}
+      </button>
+
+      <aside className={`admin-sidebar ${menuOpen ? "open" : ""}`}>
         <div className="admin-sidebar-brand">
           <span className="admin-sidebar-brand-name">{"Gü"}tenBites</span>
           <span className="admin-sidebar-brand-label">Admin</span>
@@ -46,6 +56,7 @@ export default function AdminLayout({
                 key={item.href}
                 href={item.href}
                 className={`admin-nav-item${isActive ? " active" : ""}`}
+                onClick={() => setMenuOpen(false)}
               >
                 {item.label}
               </Link>
