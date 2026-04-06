@@ -302,6 +302,7 @@ export default function BookPage() {
                     height="14"
                     viewBox="0 0 24 24"
                     fill="currentColor"
+                    aria-hidden="true"
                   >
                     <path d="M8 5v14l11-7z" />
                   </svg>
@@ -318,45 +319,40 @@ export default function BookPage() {
             <h2 className="chapter-list-heading">Chapters</h2>
 
             {chapters.length === 0 ? (
-              <p
-                style={{
-                  color: "var(--ink-muted)",
-                  fontFamily: "var(--font-body)",
-                  padding: "2rem 0",
-                }}
-              >
-                No chapters available yet.
-              </p>
+              <div className="book-empty-state">
+                <p>No chapters available yet. This book is still being processed.</p>
+              </div>
             ) : (
-              <div className="chapter-list">
+              <ol className="chapter-list" role="list" aria-label="Chapters">
                 {chapters.map((chapter, idx) => {
                   const isActive = currentChapterIdx === idx;
                   return (
-                    <button
-                      key={chapter.id}
-                      className={`chapter-row ${isActive ? "chapter-row--active" : ""}`}
-                      onClick={() => playChapter(idx)}
-                      disabled={!chapter.audio_url}
-                    >
-                      <div className="chapter-row-left">
-                        <span className="chapter-num">
-                          {isActive && isPlaying ? (
-                            <span className="chapter-playing-indicator" />
-                          ) : (
-                            String(chapter.chapter_num).padStart(2, "0")
-                          )}
+                    <li key={chapter.id}>
+                      <button
+                        className={`chapter-row ${isActive ? "chapter-row--active" : ""}`}
+                        onClick={() => playChapter(idx)}
+                        disabled={!chapter.audio_url}
+                      >
+                        <div className="chapter-row-left">
+                          <span className="chapter-num">
+                            {isActive && isPlaying ? (
+                              <span className="chapter-playing-indicator" />
+                            ) : (
+                              String(chapter.chapter_num).padStart(2, "0")
+                            )}
+                          </span>
+                          <span className="chapter-title-text">
+                            {chapter.chapter_title || `Chapter ${chapter.chapter_num}`}
+                          </span>
+                        </div>
+                        <span className="chapter-duration">
+                          {formatDuration(chapter.duration_secs)}
                         </span>
-                        <span className="chapter-title-text">
-                          {chapter.chapter_title || `Chapter ${chapter.chapter_num}`}
-                        </span>
-                      </div>
-                      <span className="chapter-duration">
-                        {formatDuration(chapter.duration_secs)}
-                      </span>
-                    </button>
+                      </button>
+                    </li>
                   );
                 })}
-              </div>
+              </ol>
             )}
           </div>
         </section>
@@ -379,8 +375,9 @@ export default function BookPage() {
                 className="audio-ctrl-btn"
                 onClick={() => handleSkip(-15)}
                 title="Skip back 15s"
+                aria-label="Skip back 15 seconds"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
                   <text x="7" y="15" fontSize="5" fill="currentColor" fontFamily="sans-serif">15</text>
                 </svg>
@@ -390,13 +387,14 @@ export default function BookPage() {
                 className="audio-play-btn"
                 onClick={handlePlayPause}
                 title={isPlaying ? "Pause" : "Play"}
+                aria-label={isPlaying ? "Pause" : "Play"}
               >
                 {isPlaying ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                   </svg>
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 )}
@@ -406,8 +404,9 @@ export default function BookPage() {
                 className="audio-ctrl-btn"
                 onClick={() => handleSkip(15)}
                 title="Skip forward 15s"
+                aria-label="Skip forward 15 seconds"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M18.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z" />
                   <text x="13" y="15" fontSize="5" fill="currentColor" fontFamily="sans-serif">15</text>
                 </svg>
@@ -432,6 +431,7 @@ export default function BookPage() {
               className="audio-speed-btn"
               onClick={handleSpeedChange}
               title="Change playback speed"
+              aria-label={`Playback speed ${speed}x`}
             >
               {speed}x
             </button>

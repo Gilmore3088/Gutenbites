@@ -119,7 +119,7 @@ body::before {
 
 .nav-cta {
   font-family: var(--font-mono) !important;
-  font-size: 0.72rem !important;
+  font-size: 0.75rem !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   background: var(--ink) !important;
@@ -156,7 +156,7 @@ body::before {
 
 .hero-eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
@@ -212,7 +212,7 @@ body::before {
   align-items: center;
   gap: 0.6rem;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   background: var(--ink);
@@ -235,7 +235,7 @@ body::before {
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-muted);
@@ -351,12 +351,14 @@ body::before {
   width: 3px;
   border-radius: 4px;
   background: var(--gold);
+  height: var(--h);
+  transform-origin: bottom;
   animation: wave 1.2s ease-in-out infinite alternate;
 }
 
 @keyframes wave {
-  0% { height: 8px; opacity: 0.4; }
-  100% { height: var(--h); opacity: 1; }
+  0% { transform: scaleY(0.3); opacity: 0.4; }
+  100% { transform: scaleY(1); opacity: 1; }
 }
 
 /* Stats ribbon */
@@ -390,7 +392,7 @@ body::before {
 
 .stat-label {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-muted);
@@ -408,7 +410,7 @@ body::before {
 
 .section-eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
@@ -553,7 +555,7 @@ body::before {
 
 .feed-meta {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -644,7 +646,7 @@ body::before {
 
 .featured-cover-author {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.75);
@@ -663,7 +665,7 @@ body::before {
 
 .featured-author {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gold-light);
@@ -699,7 +701,7 @@ body::before {
 
 .featured-meta-label {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(253, 250, 245, 0.4);
@@ -745,7 +747,7 @@ body::before {
 
 .platform-label {
   font-family: var(--font-mono);
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -812,7 +814,7 @@ body::before {
 
 .email-note {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   color: var(--ink-faint);
   margin-top: 1rem;
   letter-spacing: 0.02em;
@@ -854,7 +856,7 @@ body::before {
 
 .footer-col h4 {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -887,7 +889,7 @@ body::before {
   display: flex;
   justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   color: var(--ink-faint);
 }
@@ -1053,7 +1055,7 @@ body::before {
 
 .book-cover-author {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.65);
@@ -1062,7 +1064,7 @@ body::before {
 .book-feed-badge {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold-light);
@@ -1085,7 +1087,7 @@ body::before {
 
 .book-author {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(253, 250, 245, 0.55);
@@ -1124,7 +1126,7 @@ body::before {
 
 .book-meta-label {
   font-family: var(--font-mono);
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(253, 250, 245, 0.38);
@@ -1207,7 +1209,7 @@ body::before {
 
 .chapter-num {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   color: var(--ink-faint);
   min-width: 2rem;
@@ -1249,7 +1251,7 @@ body::before {
 
 .chapter-duration {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   color: var(--ink-faint);
   flex-shrink: 0;
@@ -1289,7 +1291,7 @@ body::before {
 
 .audio-player-chapter-label {
   font-family: var(--font-mono);
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold-light);
@@ -1315,11 +1317,14 @@ body::before {
   border: none;
   cursor: pointer;
   color: rgba(253, 250, 245, 0.6);
-  padding: 0.4rem;
+  padding: 0.6rem;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 4px;
   transition: color 0.15s;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .audio-ctrl-btn:hover {
@@ -1327,8 +1332,8 @@ body::before {
 }
 
 .audio-play-btn {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: var(--gold);
   border: none;
@@ -1354,7 +1359,7 @@ body::before {
 
 .audio-time {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.04em;
   color: rgba(253, 250, 245, 0.45);
   white-space: nowrap;
@@ -1397,7 +1402,7 @@ body::before {
 
 .audio-speed-btn {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -1462,7 +1467,7 @@ body::before {
 
 .browse-hero-eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
@@ -1522,7 +1527,7 @@ body::before {
 
 .filter-tab {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-muted);
@@ -1530,6 +1535,7 @@ body::before {
   border: none;
   border-bottom: 2px solid transparent;
   padding: 0.75rem 1rem;
+  min-height: 44px;
   cursor: pointer;
   white-space: nowrap;
   transition: color 0.15s, border-color 0.15s;
@@ -1593,7 +1599,7 @@ body::before {
 .book-card-feed-badge {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold-dark);
@@ -1634,7 +1640,7 @@ body::before {
 
 .book-card-stats {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   color: var(--ink-faint);
   text-transform: uppercase;
@@ -1642,7 +1648,7 @@ body::before {
 
 .book-card-listen {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--gold-dark);
@@ -1676,5 +1682,41 @@ body::before {
 
   .browse-filters {
     top: 72px;
+  }
+}
+
+/* ===== CHAPTER LIST SEMANTIC STRUCTURE ===== */
+.chapter-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ===== TEXT OVERFLOW PROTECTION ===== */
+.title-cell,
+.chapter-title,
+.feed-card h3,
+.featured-cover-title,
+.book-header-title {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* ===== EMPTY STATE ===== */
+.book-empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
