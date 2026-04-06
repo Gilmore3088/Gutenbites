@@ -11,7 +11,7 @@ vi.mock("@/lib/r2", () => ({
   uploadBufferToR2: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock("@/lib/elevenlabs", () => ({
+vi.mock("@/lib/tts", () => ({
   chunkTextBySentence: vi.fn(),
   synthesizeChunk: vi.fn(),
 }));

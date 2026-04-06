@@ -1,7 +1,7 @@
 import { downloadFromR2, uploadBufferToR2 } from "@/lib/r2";
 import { getSupabase, transitionTitle, logPipelineEvent } from "@/lib/supabase";
 import type { Chapter, Feed } from "@/lib/supabase";
-import { chunkTextBySentence, synthesizeChunk } from "@/lib/elevenlabs";
+import { chunkTextBySentence, synthesizeChunk } from "@/lib/tts";
 
 export async function synthesizeTitle(titleId: string): Promise<void> {
   const supabase = getSupabase();

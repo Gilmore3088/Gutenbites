@@ -23,8 +23,8 @@ export const config = {
     bucket: () => process.env.STORAGE_BUCKET ?? "gutenbites",
   },
   elevenlabs: {
-    apiKey: () => required("ELEVENLABS_API_KEY"),
-    voiceId: () => required("ELEVENLABS_VOICE_ID"),
+    apiKey: () => process.env.ELEVENLABS_API_KEY ?? "",
+    voiceId: () => process.env.ELEVENLABS_VOICE_ID ?? "",
   },
   anthropic: {
     apiKey: () => required("ANTHROPIC_API_KEY"),
