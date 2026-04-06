@@ -21,6 +21,7 @@ const FEEDS = [
   {
     icon: "\u{1F3DB}",
     name: "Classics",
+    slug: "classics",
     description:
       "The Western canon essentials. Austen, Dickens, Dostoevsky, Twain, and the Bront\u00ebs.",
     count: "50+ titles",
@@ -28,6 +29,7 @@ const FEEDS = [
   {
     icon: "\u{1F30D}",
     name: "World Voices",
+    slug: "world-voices",
     description:
       "Translated masterworks from Tolstoy, Dumas, Hugo, Verne, and beyond the Anglophone tradition.",
     count: "30+ titles",
@@ -35,6 +37,7 @@ const FEEDS = [
   {
     icon: "\u{1F52E}",
     name: "Strange & Gothic",
+    slug: "strange-gothic",
     description:
       "Shelley, Stoker, Poe, Lovecraft, and the uncanny corners of the literary imagination.",
     count: "25+ titles",
@@ -42,6 +45,7 @@ const FEEDS = [
   {
     icon: "\u{1F4D6}",
     name: "Short & Sharp",
+    slug: "short-sharp",
     description:
       "Novellas and collections you can finish in a single commute. Kafka, Chekhov, Wilde.",
     count: "40+ titles",
@@ -49,6 +53,7 @@ const FEEDS = [
   {
     icon: "\u{1F52D}",
     name: "Big Ideas",
+    slug: "big-ideas",
     description:
       "Philosophy, essays, and foundational texts. Plato, Thoreau, Wollstonecraft, Montaigne.",
     count: "20+ titles",
@@ -56,6 +61,7 @@ const FEEDS = [
   {
     icon: "\u{1F33F}",
     name: "Hidden Gems",
+    slug: "hidden-gems",
     description:
       "Overlooked and underappreciated works curated by our editorial AI. Expect surprises.",
     count: "Coming soon",
@@ -87,7 +93,7 @@ export default function Home() {
               <a href="#how-it-works">How it works</a>
             </li>
             <li>
-              <a href="#listen">Listen</a>
+              <a href="/browse">Listen</a>
             </li>
             <li>
               <a href="#subscribe" className="nav-cta">
@@ -242,12 +248,12 @@ export default function Home() {
 
         <div className="feeds-grid">
           {FEEDS.map((feed) => (
-            <div className="feed-card" key={feed.name}>
+            <a href={`/api/rss/${feed.slug}`} className="feed-card" key={feed.name} target="_blank" rel="noopener">
               <span className="feed-icon">{feed.icon}</span>
               <h3>{feed.name}</h3>
               <p>{feed.description}</p>
               <div className="feed-meta">{feed.count}</div>
-            </div>
+            </a>
           ))}
         </div>
       </section>
@@ -257,45 +263,49 @@ export default function Home() {
         <div className="section-header">
           <div className="section-eyebrow">Now Playing</div>
           <h2>
-            Featured: <em>Alice in Wonderland</em>
+            Featured: <em>A Modest Proposal</em>
           </h2>
         </div>
 
         <div className="featured-content">
           <div className="featured-cover">
             <div className="featured-cover-title">
-              Alice&rsquo;s Adventures in Wonderland
+              A Modest Proposal
             </div>
-            <div className="featured-cover-author">Lewis Carroll</div>
+            <div className="featured-cover-author">Jonathan Swift</div>
           </div>
 
           <div className="featured-details">
-            <h3>Alice&rsquo;s Adventures in Wonderland</h3>
-            <div className="featured-author">Lewis Carroll &middot; 1865</div>
+            <h3>A Modest Proposal</h3>
+            <div className="featured-author">Jonathan Swift &middot; 1729</div>
             <p className="featured-description">
-              Fall down the rabbit hole with Alice in this beloved classic.
-              From the Mad Hatter&rsquo;s tea party to the Queen of
-              Hearts&rsquo; croquet ground, Carroll&rsquo;s masterpiece of
-              literary nonsense has delighted readers for over 150 years.
-              Now, hear it narrated chapter by chapter.
+              Swift&rsquo;s razor-sharp satirical essay proposes a shocking solution
+              to Irish poverty that skewers English colonial indifference with devastating wit.
+              One of the most brilliantly savage pieces of political satire ever written.
             </p>
 
             <div className="featured-meta-row">
               <div className="featured-meta-item">
-                <div className="featured-meta-value">12</div>
+                <div className="featured-meta-value">1</div>
                 <div className="featured-meta-label">Chapters</div>
               </div>
               <div className="featured-meta-item">
-                <div className="featured-meta-value">2h 45m</div>
+                <div className="featured-meta-value">22m</div>
                 <div className="featured-meta-label">Total Runtime</div>
               </div>
               <div className="featured-meta-item">
-                <div className="featured-meta-value">Classics</div>
+                <div className="featured-meta-value">Big Ideas</div>
                 <div className="featured-meta-label">Feed</div>
               </div>
             </div>
 
-            <a href="#listen" className="btn-primary" style={{ background: "var(--gold)" }}>
+            <a
+              href="https://ipijakdbonxvgvlxbzfv.supabase.co/storage/v1/object/public/gutenbites/audio/final/1080/001.mp3"
+              className="btn-primary"
+              style={{ background: "var(--gold)" }}
+              target="_blank"
+              rel="noopener"
+            >
               <svg
                 width="14"
                 height="14"
@@ -387,10 +397,13 @@ export default function Home() {
                   <a href="#feeds">Feeds</a>
                 </li>
                 <li>
-                  <a href="#">Browse Books</a>
+                  <a href="/browse">Browse Books</a>
                 </li>
                 <li>
                   <a href="#">Premium</a>
+                </li>
+                <li>
+                  <a href="/admin">Admin</a>
                 </li>
               </ul>
             </div>
