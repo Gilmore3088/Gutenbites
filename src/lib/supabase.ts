@@ -93,7 +93,10 @@ export async function logPipelineEvent(
   }
 }
 
-export async function verifyAdmin(authHeader: string | null): Promise<{
+export async function verifyAdmin(
+  authHeader: string | null,
+  cookieToken?: string | null
+): Promise<{
   valid: boolean;
   userId: string | null;
   error: string | null;
@@ -103,13 +106,19 @@ export async function verifyAdmin(authHeader: string | null): Promise<{
     return { valid: true, userId: "dev-admin", error: null };
   }
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return { valid: false, userId: null, error: "Missing authorization header" };
+  // Extract token from Authorization header or cookie
+  let token: string | null = null;
+  if (authHeader?.startsWith("Bearer ")) {
+    token = authHeader.replace("Bearer ", "");
+  } else if (cookieToken) {
+    token = cookieToken;
   }
 
-  const token = authHeader.replace("Bearer ", "");
-  const supabase = getSupabase();
+  if (!token) {
+    return { valid: false, userId: null, error: "Missing authorization" };
+  }
 
+  const supabase = getSupabase();
   const { data: { user }, error } = await supabase.auth.getUser(token);
 
   if (error || !user) {

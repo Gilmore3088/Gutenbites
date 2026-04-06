@@ -9,7 +9,7 @@ export async function PUT(
 ) {
   const { id } = await params;
 
-  const auth = await verifyAdmin(request.headers.get("authorization"));
+  const auth = await verifyAdmin(request.headers.get("authorization"), request.cookies.get("sb-access-token")?.value);
   if (!auth.valid) {
     return NextResponse.json({ error: auth.error }, { status: 401 });
   }
