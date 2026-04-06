@@ -30,9 +30,8 @@ async function sleep(ms: number): Promise<void> {
 }
 
 function generateMockAudio(text: string): Buffer {
-  // Generate a short silent MP3 using ffmpeg (~1 sec per 150 words)
-  const words = text.split(/\s+/).length;
-  const durationSecs = Math.max(1, Math.round(words / 2.5)); // ~150 wpm speaking rate
+  // Generate a short silent MP3 — fixed 3 seconds to keep files small
+  const durationSecs = 3;
   const tmpDir = mkdtempSync(path.join(os.tmpdir(), "mock-tts-"));
   const outPath = path.join(tmpDir, "mock.mp3");
 
