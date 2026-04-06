@@ -127,9 +127,31 @@ function TitlesPageContent() {
             {titles.map((t) => (
               <tr key={t.id}>
                 <td className="mono">{t.gutenberg_id}</td>
-                <td className="title-cell">{t.title}</td>
+                <td className="title-cell">
+                  {t.status === "published" ? (
+                    <a
+                      href={`/api/rss/${t.feed_slug}`}
+                      target="_blank"
+                      rel="noopener"
+                      style={{ color: "var(--ink)", textDecoration: "underline", textDecorationColor: "var(--gold)", textUnderlineOffset: "3px" }}
+                    >
+                      {t.title}
+                    </a>
+                  ) : (
+                    t.title
+                  )}
+                </td>
                 <td>{t.author}</td>
-                <td className="mono">{t.feed_slug}</td>
+                <td className="mono">
+                  <a
+                    href={`/api/rss/${t.feed_slug}`}
+                    target="_blank"
+                    rel="noopener"
+                    style={{ color: "var(--ink-muted)", textDecoration: "none" }}
+                  >
+                    {t.feed_slug}
+                  </a>
+                </td>
                 <td><StateBadge state={t.status} /></td>
                 <td className="mono" style={{ fontSize: "0.75rem", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {t.error_msg ?? "—"}
