@@ -122,7 +122,7 @@ export default function Home() {
               listen.
             </p>
             <div className="hero-actions animate-up delay-3">
-              <a href="#listen" className="btn-primary">
+              <a href="/browse" className="btn-primary">
                 <svg
                   width="16"
                   height="16"
@@ -300,11 +300,9 @@ export default function Home() {
             </div>
 
             <a
-              href="https://ipijakdbonxvgvlxbzfv.supabase.co/storage/v1/object/public/gutenbites/audio/final/1080/001.mp3"
+              href="/books/1080"
               className="btn-primary"
               style={{ background: "var(--gold)" }}
-              target="_blank"
-              rel="noopener"
             >
               <svg
                 width="14"
@@ -314,7 +312,7 @@ export default function Home() {
               >
                 <path d="M8 5v14l11-7z" />
               </svg>
-              Listen on Spotify
+              Listen Now
             </a>
           </div>
         </div>
