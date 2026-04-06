@@ -59,6 +59,7 @@ export default function BookPage() {
   const [error, setError] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
+  const [introExpanded, setIntroExpanded] = useState(false);
   const [currentChapterIdx, setCurrentChapterIdx] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -275,7 +276,17 @@ export default function BookPage() {
               <p className="book-author">{book.author}</p>
 
               {book.intro_text && (
-                <p className="book-intro">{book.intro_text}</p>
+                <div>
+                  <p className={`book-intro ${introExpanded ? "expanded" : ""}`}>
+                    {book.intro_text}
+                  </p>
+                  <button
+                    className="book-intro-toggle"
+                    onClick={() => setIntroExpanded(!introExpanded)}
+                  >
+                    {introExpanded ? "Show less" : "Read more"}
+                  </button>
+                </div>
               )}
 
               <div className="book-meta-row">

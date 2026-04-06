@@ -144,15 +144,15 @@ export default function Home() {
             <div className="book-stack">
               <div className="book book-1">
                 <div className="book-spine" />
-                <div className="book-title">Pride &amp; Prejudice</div>
+                <div className="book-stack-title">Pride &amp; Prejudice</div>
               </div>
               <div className="book book-2">
                 <div className="book-spine" />
-                <div className="book-title">The Great Gatsby</div>
+                <div className="book-stack-title">The Great Gatsby</div>
               </div>
               <div className="book book-3">
                 <div className="book-spine" />
-                <div className="book-title">
+                <div className="book-stack-title">
                   Alice in
                   <br />
                   Wonderland
