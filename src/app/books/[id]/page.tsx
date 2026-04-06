@@ -440,7 +440,7 @@ export default function BookPage() {
       )}
 
       {/* FOOTER */}
-      <footer className="footer" style={{ paddingBottom: currentChapter ? "6rem" : undefined }}>
+      <footer className="footer" style={{ paddingBottom: chapters.length > 0 ? "6rem" : undefined }}>
         <div className="footer-inner">
           <div>
             <div className="footer-brand">G{"ü"}tenBites</div>
