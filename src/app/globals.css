@@ -1157,6 +1157,9 @@ body::before {
 .chapter-list {
   display: flex;
   flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .chapter-row {
@@ -1683,13 +1686,6 @@ body::before {
   .browse-filters {
     top: 72px;
   }
-}
-
-/* ===== CHAPTER LIST SEMANTIC STRUCTURE ===== */
-.chapter-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 /* ===== TEXT OVERFLOW PROTECTION ===== */
