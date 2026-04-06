@@ -57,12 +57,7 @@ export async function synthesizeTitle(titleId: string): Promise<void> {
     const chapterNum = String(chapter.chapter_num).padStart(3, "0");
 
     for (let i = 0; i < chunks.length; i++) {
-      const chunkIndex = String(i).padStart(3, "0");
       const { audio, charCount } = await synthesizeChunk(chunks[i], typedFeed.voice_id);
-
-      const chunkKey = `audio/chunks/${gutenbergId}/${chapterNum}/chunk_${chunkIndex}.mp3`;
-      await uploadBufferToR2(chunkKey, audio, "audio/mpeg");
-
       chunkBuffers.push(audio);
       chapterCharCount += charCount;
     }

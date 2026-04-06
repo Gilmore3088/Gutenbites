@@ -50,8 +50,11 @@ describe("uploadToR2 (Supabase Storage)", () => {
     );
   });
 
-  it("throws on upload error", async () => {
-    mockUpload.mockResolvedValueOnce({ error: { message: "Quota exceeded" } });
+  it("throws on upload error after retries", async () => {
+    mockUpload
+      .mockResolvedValueOnce({ error: { message: "Quota exceeded" } })
+      .mockResolvedValueOnce({ error: { message: "Quota exceeded" } })
+      .mockResolvedValueOnce({ error: { message: "Quota exceeded" } });
     await expect(uploadToR2("key", "body", "text/plain")).rejects.toThrow("Quota exceeded");
   });
 });
