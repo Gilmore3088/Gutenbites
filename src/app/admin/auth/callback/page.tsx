@@ -1,68 +1,80 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 export default function AuthCallbackPage() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState("Signing you in...");
 
   useEffect(() => {
-    async function handleCallback() {
-      const supabase = getSupabaseBrowser();
+    const supabase = getSupabaseBrowser();
 
-      // Supabase JS client auto-detects hash fragments and exchanges them
-      const { data, error: authError } = await supabase.auth.getSession();
+    // Handle both PKCE (code in query) and implicit (token in hash)
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get("access_token");
+    const refreshToken = hashParams.get("refresh_token");
 
-      if (authError) {
-        setError(authError.message);
-        return;
-      }
+    async function authenticate() {
+      try {
+        if (code) {
+          // PKCE flow: exchange code for session
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+        } else if (accessToken) {
+          // Implicit flow: set session from hash params
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken ?? "",
+          });
+          if (error) throw error;
+        } else {
+          // No auth params — wait for Supabase to auto-detect
+          // (some versions handle it automatically)
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
 
-      if (data.session) {
-        // Set cookie so middleware and API routes can read it
-        document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
-        router.push("/admin");
-      } else {
-        // No session yet — might be loading. Listen for auth state change.
-        const { data: listener } = supabase.auth.onAuthStateChange(
-          (event, session) => {
-            if (event === "SIGNED_IN" && session) {
-              document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
-              router.push("/admin");
-            }
-          }
-        );
-
-        // Cleanup after 10 seconds if nothing happens
-        setTimeout(() => {
-          listener.subscription.unsubscribe();
-          setError("Authentication timed out. Please try logging in again.");
-        }, 10000);
+        // Check if we have a session now
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          // Store token in cookie for middleware/API auth
+          document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
+          setStatus("Success! Redirecting...");
+          window.location.href = "/admin";
+        } else {
+          setStatus("No session found. Please try logging in again.");
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Authentication failed";
+        setStatus(`Error: ${message}`);
       }
     }
 
-    handleCallback();
-  }, [router]);
-
-  if (error) {
-    return (
-      <div className="admin-login">
-        <div className="admin-login-card">
-          <p style={{ color: "#9a1a1a", marginBottom: "1rem" }}>{error}</p>
-          <a href="/admin/login" className="admin-login-btn" style={{ display: "block", textAlign: "center", textDecoration: "none" }}>
-            Back to Login
-          </a>
-        </div>
-      </div>
-    );
-  }
+    authenticate();
+  }, []);
 
   return (
     <div className="admin-login">
       <div className="admin-login-card">
-        <p>Signing you in...</p>
+        <div className="admin-login-brand">
+          <span className="admin-login-logo">{"Gü"}tenBites</span>
+          <span className="admin-login-subtitle">Admin Dashboard</span>
+        </div>
+        <p style={{ textAlign: "center", marginTop: "1.5rem" }}>{status}</p>
+        {status.includes("Error") || status.includes("No session") ? (
+          <a
+            href="/admin/login"
+            style={{
+              display: "block",
+              textAlign: "center",
+              marginTop: "1rem",
+              color: "var(--gold)",
+            }}
+          >
+            Back to Login
+          </a>
+        ) : null}
       </div>
     </div>
   );
