@@ -2,21 +2,30 @@ import { getSupabase } from "./supabase";
 
 const BUCKET = process.env.STORAGE_BUCKET ?? "gutenbites";
 
+const MAX_UPLOAD_RETRIES = 3;
+const UPLOAD_RETRY_DELAYS = [1000, 3000, 10000];
+
 export async function uploadToR2(
   key: string,
   body: string | Buffer,
   contentType: string
 ): Promise<void> {
-  const supabase = getSupabase();
   const blobPart: BlobPart = typeof body === "string" ? body : body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength) as ArrayBuffer;
   const blob = new Blob([blobPart], { type: contentType });
 
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .upload(key, blob, { contentType, upsert: true });
+  for (let attempt = 0; attempt < MAX_UPLOAD_RETRIES; attempt++) {
+    const supabase = getSupabase();
+    const { error } = await supabase.storage
+      .from(BUCKET)
+      .upload(key, blob, { contentType, upsert: true });
 
-  if (error) {
-    throw new Error(`Storage upload failed for ${key}: ${error.message}`);
+    if (!error) return;
+
+    if (attempt < MAX_UPLOAD_RETRIES - 1) {
+      await new Promise((r) => setTimeout(r, UPLOAD_RETRY_DELAYS[attempt]));
+    } else {
+      throw new Error(`Storage upload failed for ${key}: ${error.message}`);
+    }
   }
 }
 
